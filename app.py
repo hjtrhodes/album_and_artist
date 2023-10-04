@@ -1,18 +1,22 @@
-from lib.database_connection import DatabaseConnection
 from lib.artist_repository import ArtistRepository
+from lib.database_connection import DatabaseConnection
 
+class Application():
+    def __init__(self):
+        self._connection = DatabaseConnection()
+        self._connection.connect()
+        self._connection.seed("seeds/music_library.sql")
 
-# Connect to the database
-connection = DatabaseConnection()
-connection.connect()
+    def run(self):
+        user_task = input(('Please enter: all, find, create or delete - '))
+        if user_task == 'all':
+            artist_repository = ArtistRepository(self._connection)
+            artists = artist_repository.all()
+            for artist in artists:
+                print(f"{artist.id}: {artist.name} ({artist.genre})")
+        else:
+            pass
 
-# Seed with some seed data
-connection.seed("seeds/music_library.sql")
-
-# Retrieve all artists
-# artist_repository = ArtistRepository(connection)
-# artists = artist_repository.all()
-
-# # List them out
-# for artist in artists:
-#     print(artist)
+if __name__ == '__main__':
+    app = Application()
+    app.run()
